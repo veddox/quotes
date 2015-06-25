@@ -15,12 +15,11 @@ tags: life, determination
 author: Derek Bok
 text: If you think education is expensive, try ignorance.
 tags: knowledge, life
-note: Derek Bok is a former president of Harvard
 
 [Quote]
 author: Robert Frost
 text: In three words, I can sum up everything I have learnt about life:
-	   it goes on.
+	  it goes on.
 tags: life, determination
 
 [Quote]

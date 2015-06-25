@@ -28,6 +28,13 @@
 		 ((not ,condition) NIL)
 		 ,@body))
 
+(defun count-instances (search-term search-sequence &key (test #'eql))
+	"Count the number of instances of search-term in search-sequence"
+	(let ((count 0))
+		(dotimes (i (length search-sequence) count)
+			(when (funcall test search-term (elt search-sequence i))
+				(incf count)))))
+
 (defun split-string (str separator)
 	"Split the string up into a list of strings along the separator character"
 	(cond ((equalp str (to-string separator)) NIL)
@@ -46,6 +53,16 @@
 				(list-to-string (append letter-list-2 (list letter)))))
 		(if (< c i) (setf letter-list-1 (append letter-list-1 (list letter)))
 			(setf letter-list-2 (append letter-list-2 (list letter))))))
+
+(defun list-to-string (char-list)
+	"Convert a character list to a string"
+	(let ((s (make-string (length char-list) :initial-element #\SPACE)))
+		(dotimes (i (length char-list) s)
+			(setf (aref s i) (nth i char-list)))))
+
+(defun trim-whitespace (s)
+	"Trim off spaces and tabs before and after string s"
+	(string-trim '(#\space #\tab) s))
 
 (defun to-string (x)
 	"Whatever x is, convert it into a string"
