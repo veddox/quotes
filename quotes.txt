@@ -1,0 +1,24 @@
+; This is the test collection for quotes
+; author: Daniel Vedder 25/06/2015
+
+[Quote]
+author: Benjamin Franklin
+quote: An investment in knowledge always pays the best interest.
+tags: knowledge, inspiring
+
+[Quote]
+author: Mark Twain
+quote: The world does not owe you anything. It was here first.
+tags: life, determination
+
+[Quote]
+author: Derek Bok
+quote: If you think education is expensive, try ignorance.
+tags: knowledge, life
+note: Derek Bok is a former president of Harvard
+
+[Quote]
+author: Robert Frost
+quote: In three words, I can sum up everything I have learnt about life:
+	   it goes on.
+tags: life, determination
