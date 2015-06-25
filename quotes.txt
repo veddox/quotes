@@ -3,22 +3,28 @@
 
 [Quote]
 author: Benjamin Franklin
-quote: An investment in knowledge always pays the best interest.
+text: An investment in knowledge always pays the best interest.
 tags: knowledge, inspiring
 
 [Quote]
 author: Mark Twain
-quote: The world does not owe you anything. It was here first.
+text: The world does not owe you anything. It was here first.
 tags: life, determination
 
 [Quote]
 author: Derek Bok
-quote: If you think education is expensive, try ignorance.
+text: If you think education is expensive, try ignorance.
 tags: knowledge, life
 note: Derek Bok is a former president of Harvard
 
 [Quote]
 author: Robert Frost
-quote: In three words, I can sum up everything I have learnt about life:
+text: In three words, I can sum up everything I have learnt about life:
 	   it goes on.
 tags: life, determination
+
+[Quote]
+author: Alan Perlis
+text: We toast the Lisp programmer who pens his thoughts within 
+	  nests of parentheses.
+tags: Lisp, programming, computers

@@ -1,6 +1,9 @@
 ;;;
-;;; Quotes is a small Unix utility for creating, organizing 
+;;; quotes is a small Unix utility for creating, organizing 
 ;;; and accessing your own collection of quotes and citations.
+;;;
+;;; This is the main (frontend) module, responsible for commandline
+;;; parameter parsing and the text-based UI.
 ;;;
 ;;; Licensed under the terms of the MIT license.
 ;;; author: Daniel Vedder
@@ -9,7 +12,9 @@
 
 (defconstant VERSION '(0 0 1))
 
+(load "util.lisp")
 (load "parser.lisp")
+(load "backend.lisp")
 
 (defun print-version ()
 	(format t "~&quotes ~A.~A.~A"
