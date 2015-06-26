@@ -58,12 +58,3 @@ Commandline options:
 (if *args*
 	(parse-commandline-args)
 	(main-menu))
-
-
-(defun test ()
-	(setf *collection* NIL)
-	(add-quote (make-quotation :author "Jesus" :text "It is finished" :tags '("Bible")))
-	(add-quote (make-quotation :author "John" :text "Jesus wept" :tags '("Bible")))
-	(add-quote (make-quotation :author "Mark Twain" :text "The world doesn't owe you anything. It was here first." :tags '("life" "determination"))))
-
-(test)

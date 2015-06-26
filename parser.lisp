@@ -9,37 +9,36 @@
 ;;; date: 25/06/2015
 ;;;
 
-(defun parse-quotefile (quote-file)
+(defun parse-quotefile (quote-file &optional (build-*collection* t))
 	"Parse the given file, transforming it into a list of quotes"
-	(do* ((quote-list nil) (lines (remove-comments (load-text-file quote-file)))
-			 (current-quote NIL) (line-nr 0 (1+ line-nr))
+	;; This function returns a list of quotes. If build-*collection* is
+	;; true, each quote is also automatically added to the *collection*.
+	;; (As it represents a side-effect, this behaviour can be switched off.)
+	(do* ((quote-list nil) (current-quote NIL)
+			 (lines (concatenate-multilines
+						(remove-comments (load-text-file quote-file))))
+			 (line-nr 0 (1+ line-nr))
 			 (line (nth line-nr lines) (nth line-nr lines)))
 		((null line) quote-list)
-		;; concatenate multi-line entries (indicated by indentation)
-		;; FIXME doesn't remove the indented lines
-		(do* ((next-line-nr (1+ line-nr) (1+ next-line-nr))
-				 (next-line (nth next-line-nr lines) (nth next-line-nr lines)))
-			((or (null next-line) (not (or (eql (aref next-line 0) #\space)
-										  (eql (aref next-line 0) #\tab)))) NIL)
-			(setf line (concatenate 'string line (trim-whitespace next-line))))
-		(break)
 		;; start a new quote
 		(if (equalp "[quote]" (trim-whitespace line))
 			(progn
 				(when current-quote
-					(setf quote-list (append quote-list (list current-quote))))
+					(setf quote-list (append quote-list (list current-quote)))
+					(when build-*collection* (add-quote current-quote)))
 				(setf current-quote (make-quotation)))
-			;; interpret the first word of the line
-			;; FIXME doesn't seem to do anything :-(
-			(case (first (cut-string line (position #\: line)))
-				("author:" (setf (quotation-author current-quote)
-							   (trim-whitespace
-								   (second (cut-string line 7)))))
-				("text:" (setf (quotation-text current-quote)
-							 (trim-whitespace
-								 (second (cut-string line 5)))))
-				("tags:" (setf (quotation-tags current-quote)
-							 (extract-tags line)))))))
+			;; interpret the first word of the line (the keyword)
+			(let ((keyword (first (cut-string line (1+ (position #\: line))))))
+				(cond ((equalp keyword "author:")
+						  (setf (quotation-author current-quote)
+							  (trim-whitespace (second (cut-string line 7)))))
+					((equalp keyword "text:")
+						(setf (quotation-text current-quote)
+							(trim-whitespace (second (cut-string line 5)))))
+					((equalp keyword "tags:")
+						(setf (quotation-tags current-quote)
+							(extract-tags line)))
+					(t (error "Unrecognized construct: ~A" line)))))))
 
 (defun remove-comments (lines)
 	"Remove comments and empty lines"
@@ -47,6 +46,20 @@
 		((or (equalp (car lines) "") (eql (aref (car lines) 0) #\;))
 			(remove-comments (cdr lines)))
 		(t (cons (car lines) (remove-comments (cdr lines))))))
+
+(defun concatenate-multilines (lines)
+	"Concatenate multilines in this list of strings"
+	;; Multilines are denoted by indentation in subsequent lines
+	(let ((next (cadr lines)))
+		(cond ((null lines) NIL)
+			((and next (or (eql (aref next 0) #\space)
+						   (eql (aref next 0) #\tab)))
+				(concatenate-multilines
+					(cons (concatenate 'string
+							  (trim-whitespace (car lines) 'right)  " "
+							  (trim-whitespace next))
+						(cddr lines))))
+			(t (cons (car lines) (concatenate-multilines (cdr lines)))))))
 
 (defun extract-tags (line)
 	"Extract a list of tags from a collection file line"

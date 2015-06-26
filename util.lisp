@@ -60,9 +60,13 @@
 		(dotimes (i (length char-list) s)
 			(setf (aref s i) (nth i char-list)))))
 
-(defun trim-whitespace (s)
+(defun trim-whitespace (s &optional (side 'both))
 	"Trim off spaces and tabs before and after string s"
-	(string-trim '(#\space #\tab) s))
+	(let ((whitespace '(#\space #\tab)))
+		(case side
+			('left (string-left-trim whitespace s))
+			('right (string-right-trim whitespace s))
+			(t (string-trim whitespace s)))))
 
 (defun to-string (x)
 	"Whatever x is, convert it into a string"

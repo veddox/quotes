@@ -16,12 +16,21 @@
 	(tags NIL))
 
 (defvar *collection* NIL)
+(defvar *author-list* NIL)
+(defvar *tag-list* NIL)
 
 ;; initialize the random state
 (setf *random-state* (make-random-state t))
 
 (defun add-quote (quotation)
 	"Add a quote to the collection"
+	;; index the tags of this quotation
+	(dolist (tag (quotation-tags quotation))
+		(unless (member tag *tag-list* :test #'equalp)
+			(setf *tag-list* (cons tag *tag-list*))))
+	;; index the author
+	(unless (member (quotation-author quotation) *author-list*)
+		(setf *author-list* (cons (quotation-author quotation) *author-list*)))
 	(setf *collection* (append *collection* (list quotation))))
 
 (defun quotes-with-tag (tag)
