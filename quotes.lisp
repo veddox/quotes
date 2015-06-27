@@ -10,14 +10,15 @@
 ;;; date: 25/06/2015
 ;;;
 
-(defconstant VERSION '(0 0 2))
+(defconstant VERSION '(0 0 3))
 
 (load "util.lisp")
 (load "backend.lisp")
 (load "parser.lisp")
 
-(defvar *default-collection*
-	(make-pathname :directory (user-homedir-pathname) :name ".quotes"))
+(defparameter *default-collection*
+	(make-pathname :name ".quotes"
+		:directory (pathname-directory (user-homedir-pathname))))
 
 (defun print-version ()
 	(format t "~&quotes ~A.~A.~A"
@@ -33,25 +34,34 @@
 Commandline options:
 -v --version          Show the version number and exit
 -h --help             Show this help text and exit
--i --interactive      Launch interactive mode (default)")
+-i --interactive      Launch interactive mode (default)
+--collection <file>   Load this quote collection (default: ~/.quotes)
+--command \"<command>\" Execute this 'quotes' command")
 	(format t "~A" help-text))
 
 (defun cmd-parameter (name &optional truth-value)
 	"Return the value of the parameter 'name'. Or T for present if truth-value."
+	;;TODO add short-form of name
 	(let ((argument (member name *args* :test #'equalp)))
 		(if argument
 			(if truth-value T (second argument))
 			NIL)))
 
 (defun parse-commandline-args ()
+	"This function implements the scripting interface for quotes"
+	;; XXX should users be able to add quotes via commandline args?
 	(cond ((or (cmd-parameter "--version" T) (cmd-parameter "-v" T))
 			  (print-version) (quit))
 		((or (cmd-parameter "--help" T) (cmd-parameter "-h" T))
 			(print-help) (quit))
 		((or (cmd-parameter "--interactive" T) (cmd-parameter "-i" T))
-			(main-menu))
-		;; TODO
-		))
+			(main-menu)))
+	(let ((collection (cmd-parameter "--collection"))
+			 (command (cmd-parameter "--command")))
+		(if collection (parse-quotefile collection)
+			(parse-quotefile *default-collection*))
+		(when command (interpret-command command))))
+
 
 (defun user-browse-quote ()
 	"The user browses his quote collection"
@@ -120,7 +130,6 @@ Type 'quit' or 'exit' to exit quotes, 'back' to return to the main menu.")
 
 (defun user-add-quote ()
 	"The user adds a quote"
-	;; TODO save to file!
 	(let ((q (make-quotation)))
 		(format t "~&Please type in the quote:")
 		(setf (quotation-text q) (input-string))
@@ -130,9 +139,13 @@ Type 'quit' or 'exit' to exit quotes, 'back' to return to the main menu.")
 		(format t "Tags must be comma-separated.")
 		(setf (quotation-tags q)
 			(extract-tags (concatenate 'string "tags:" (input-string))))
-		(format t "~&Quote added.")
-		(print q)
-		(add-quote q)
+		(let ((quotefile *default-collection*))
+			(unless (y-or-n-p "Save to your personal collection? [~A]"
+						(namestring *default-collection*))
+				(format t "~&What collection do you want to save the quote to?")
+				(input-string quotefile))
+			(save-quote q quotefile)
+			(format t "~&Quote saved."))
 		(if (y-or-n-p "Add another quote?")
 			(user-add-quote) (main-menu))))
 
@@ -145,6 +158,8 @@ Type 'quit' or 'exit' to exit quotes, 'back' to return to the main menu.")
 		(2 (format t "~&Goodbye!") (quit))))
 
 ;; Only show the interactive menu if no commandline parameters are given
+;; FIXME: the *args* variable appears to be clisp specific - how can
+;; I check for commandline arguments in an implementation-independent manner?
 (if *args*
 	(parse-commandline-args)
 	(main-menu))

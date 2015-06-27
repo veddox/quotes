@@ -14,6 +14,7 @@
 	;; This function returns a list of quotes. If build-*collection* is
 	;; true, each quote is also automatically added to the *collection*.
 	;; (As it represents a side-effect, this behaviour can be switched off.)
+	(when build-*collection* (setf *collection* NIL))
 	(do* ((quote-list nil) (current-quote NIL)
 			 (lines (concatenate-multilines
 						(remove-comments (load-text-file quote-file))))
@@ -70,3 +71,22 @@
 	(let* ((tag-string (second (cut-string line 5))) (tags nil))
 		(dolist (tag (split-string tag-string #\,) tags)
 			(setf tags (append tags (list (trim-whitespace tag)))))))
+
+(defun save-quote (q quotefile)
+	"Save a quotation to file"
+	(let ((quote-string NIL))
+		(setf quote-string
+			(append quote-string (list (format nil "~&~%[Quote]"))))
+		(setf quote-string
+			(append quote-string
+				(list (format NIL "author: ~A" (quotation-author q)))))
+		(setf quote-string
+			(append quote-string
+				(list (format NIL "text: ~A" (quotation-text q)))))
+		(setf quote-string
+			(append quote-string
+				(list (format NIL "tags: ~A"
+						  (string-from-list (quotation-tags q) ", ")))))
+		(write-to-file quote-string quotefile t)))
+
+

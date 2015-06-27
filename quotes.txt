@@ -28,3 +28,12 @@ text: We toast the Lisp programmer who pens his thoughts within
 	  nests of parentheses.
 tags: Lisp, programming, computers
 
+[Quote]
+author: Alan Perlis
+text: Lisp programmers know the value of everything but the cost of nothing.
+tags: programming, Lisp
+
+[Quote]
+author: Alan Perlis
+text: Syntactic sugar causes cancer of the semicolon.
+tags: programming

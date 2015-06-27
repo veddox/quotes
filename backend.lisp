@@ -29,7 +29,7 @@
 		(unless (member tag *tag-list* :test #'equalp)
 			(setf *tag-list* (cons tag *tag-list*))))
 	;; index the author
-	(unless (member (quotation-author quotation) *author-list*)
+	(unless (member (quotation-author quotation) *author-list* :test #'equalp)
 		(setf *author-list* (cons (quotation-author quotation) *author-list*)))
 	;; add the quote to the collection
 	(setf *collection* (append *collection* (list quotation))))

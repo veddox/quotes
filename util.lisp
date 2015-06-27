@@ -89,6 +89,16 @@
 				 (file-lines (list line) (append file-lines (list line))))
 			((null line) file-lines))))
 
+(defun write-to-file (text filename &optional (append NIL))
+	"Write text (a string or list of strings) to the specified file"
+	(let ((text-list (if (listp text) text (list text)))
+			 (f (if append
+					(open filename :direction :output :if-exists :append)
+					(open filename :direction :output))))
+		(dolist (line text-list)
+			(format f "~&~A~&" line))
+		(close f)))
+
 (defun choose-number-option (option-list)
 	"The user chooses one out of a list of options, the index is returned"
 	(dotimes (i (length option-list))
