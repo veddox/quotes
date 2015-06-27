@@ -1,3 +1,4 @@
+#!/usr/bin/clisp
 ;;;
 ;;; quotes is a small Unix utility for creating, organizing 
 ;;; and accessing your own collection of quotes and citations.
@@ -10,7 +11,7 @@
 ;;; date: 25/06/2015
 ;;;
 
-(defconstant VERSION '(0 0 3))
+(defconstant VERSION '(0 1 0))
 
 (load "util.lisp")
 (load "backend.lisp")
@@ -58,9 +59,10 @@ Commandline options:
 			(main-menu)))
 	(let ((collection (cmd-parameter "--collection"))
 			 (command (cmd-parameter "--command")))
-		(if collection (parse-quotefile collection)
-			(parse-quotefile *default-collection*))
-		(when command (interpret-command command))))
+		(when collection (setf *default-collection* collection))
+		(when command
+			(parse-quotefile *default-collection*)
+			(interpret-command command))))
 
 
 (defun user-browse-quote ()

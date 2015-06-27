@@ -1,0 +1,67 @@
+QUOTES README
+=============
+
+quotes is a small utility for creating, organizing and accessing your own
+personal collection of quotes.
+
+Written in line with the Unix philosophy, it is small, scriptable and concentrates
+on doing its one thing well. Implemented in Common Lisp, it comes with a simple, 
+text-based commandline interface.
+
+Licensed under the terms of the MIT license.
+
+
+INSTALLING
+
+Currently the only supported Common Lisp implementation is clisp. If have not
+installed this yet, you will most likely find it in your distribution's repository.
+On Ubuntu and derivatives, you can get it by passing the following command:
+
+	sudo apt-get install clisp
+
+Once clisp is installed, navigate to the directory containing quotes and start it
+with:
+
+	./quotes.lisp
+
+If you plan on using it regularly, you can do the following for easy access
+(requires root, assumes you are in the quotes folder):
+	
+	mkdir /usr/lib/quotes
+	cp quotes.lisp util.lisp parser.lisp backend.lisp /usr/lib/quotes
+	chmod 755 /usr/lib/quotes/*.lisp
+	ln -s /usr/lib/quotes/quotes.lisp /usr/bin/quotes
+
+From now on, you can access quotes like any other command in terminal.
+
+
+USING
+
+For a summary of commandline options, type
+
+	quotes --help
+
+Starting quotes without any parameters launches the interactive mode, which is
+self-explanatory.
+
+The default quote collection set up by quotes lives at ~/.quotes. This is a plain 
+text file with a very simple syntax that is easy to expand and edit by hand - 
+feel free!
+
+
+TODO
+
+Make the installation process file more user-friendly. Add support for other
+Common Lisp implementations (especially SBCL). Fix bugs.
+
+Long-term: write a GUI. This probably ought to be a standalone application in
+its own right, which could communicate with quotes using sockets - that means
+that quotes would need a server mode to be able to keep running in the background.
+
+
+Suggestions, bug fixes or any other contributions are welcome via the Github
+site https://github.com/veddox/quotes
+
+
+Daniel Vedder
+Last edited 28/06/2015
