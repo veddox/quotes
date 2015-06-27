@@ -60,6 +60,13 @@
 		(dotimes (i (length char-list) s)
 			(setf (aref s i) (nth i char-list)))))
 
+(defun string-from-list (lst &optional (separator " - "))
+	"Put all elements of lst into a single string, separated by the separator"
+	(cond ((null lst) "")
+		((= (length lst) 1) (to-string (car lst)))
+		(T (concatenate 'string (to-string (first lst)) (to-string separator)
+			(string-from-list (cdr lst) separator)))))
+
 (defun trim-whitespace (s &optional (side 'both))
 	"Trim off spaces and tabs before and after string s"
 	(let ((whitespace '(#\space #\tab)))

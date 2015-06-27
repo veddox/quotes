@@ -19,7 +19,11 @@
 						(remove-comments (load-text-file quote-file))))
 			 (line-nr 0 (1+ line-nr))
 			 (line (nth line-nr lines) (nth line-nr lines)))
-		((null line) quote-list)
+		((null line)
+			(when current-quote
+				(setf quote-list (append quote-list (list current-quote)))
+				(when build-*collection* (add-quote current-quote)))
+			quote-list)
 		;; start a new quote
 		(if (equalp "[quote]" (trim-whitespace line))
 			(progn

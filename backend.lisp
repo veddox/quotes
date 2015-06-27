@@ -31,6 +31,7 @@
 	;; index the author
 	(unless (member (quotation-author quotation) *author-list*)
 		(setf *author-list* (cons (quotation-author quotation) *author-list*)))
+	;; add the quote to the collection
 	(setf *collection* (append *collection* (list quotation))))
 
 (defun quotes-with-tag (tag)
@@ -47,7 +48,7 @@
 			(when (equalp author (quotation-author q))
 				(setf quote-list (append quote-list (list q)))))))
 
-(defun get-random-quote (&key (tag nil) (author nil))
+(defun random-quote (&key (tag nil) (author nil))
 	"Return a random quote (by this tag/author, if defined)"
 	;; TODO Simplify this with macrolet?
 	(cond ((not (or tag author))
